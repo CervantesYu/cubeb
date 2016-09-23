@@ -5,9 +5,10 @@
 # http://www.slideshare.net/DanielPfeifer1/cmake-48475415
 
 # TODO
-# - backend selection by OS/cmdline
+# - backend selection by OS/cmdline (i.e. not hardcoded)
 # - split out speex build
 #   CMakeLists.txt in speex subdir, link dep in parent
+# - doxygen docs build
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(cubeb
@@ -17,19 +18,73 @@ project(cubeb
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(cubeb src/cubeb.c
-                  src/cubeb_audiounit.cpp
-                  src/cubeb_resampler.cpp
-                  src/cubeb_panner.cpp
-                  src/cubeb_osx_run_loop.c
-                  src/speex/resample.c)
+add_library(cubeb
+  src/cubeb.c
+  src/cubeb_resampler.cpp
+  src/cubeb_panner.cpp
+  src/speex/resample.c)
 target_include_directories(cubeb PUBLIC include)
 target_include_directories(cubeb PRIVATE src)
 
-target_compile_definitions(cubeb PRIVATE USE_AUDIOUNIT)
-target_link_libraries(cubeb INTERFACE "-framework AudioUnit" "-framework CoreAudio" "-framework CoreServices")
+
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+  target_sources(cubeb PRIVATE
+    src/cubeb_audiounit.cpp
+    src/cubeb_osx_run_loop.c)
+  target_compile_definitions(cubeb PRIVATE USE_AUDIOUNIT)
+  target_link_libraries(cubeb INTERFACE "-framework AudioUnit" "-framework CoreAudio" "-framework CoreServices")
+endif()
+
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+  target_sources(cubeb PRIVATE
+    src/cubeb_pulse.c
+    src/cubeb_alsa.c
+    src/cubeb_jack.cpp)
+  target_compile_definitions(cubeb PRIVATE USE_PULSE USE_ALSA USE_JACK)
+  target_link_libraries(cubeb INTERFACE dl pthread pulse asound jack)
+endif()
+
+# The platform-specific bits below are untested and probably don't work.
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+  target_sources(cubeb PRIVATE
+    src/cubeb_wasapi.cpp
+    src/cubeb_winmm.c)
+  target_compile_definitions(cubeb PRIVATE USE_WASAPI USE_WINMM)
+  target_link_libraries(cubeb INTERFACE ole32 winmm)
+endif()
+
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Android")
+  target_sources(cubeb PRIVATE
+    src/cubeb_opensl.c
+    src/cubeb_audiotrack.c)
+  target_compile_definitions(cubeb PRIVATE USE_OPENSL USE_AUDIOTRACK)
+  target_link_libraries(cubeb INTERFACE OpenSLES)
+endif()
+
+if("${CMAKE_SYSTEM_NAME}" MATCHES "OpenBSD")
+  target_sources(cubeb PRIVATE
+    src/cubeb_sndio.c)
+  target_compile_definitions(cubeb PRIVATE USE_SNDIO)
+  target_link_libraries(cubeb INTERFACE sndio)
+endif()
+
+if("${CMAKE_SYSTEM_NAME}" MATCHES "OS2")
+  target_sources(cubeb PRIVATE
+    src/cubeb_kai.c)
+  target_compile_definitions(cubeb PRIVATE USE_KAI)
+  target_link_libraries(cubeb INTERFACE kai)
+endif()
 
 #add_subdirectory(src/speex)
+
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/docs/Doxyfile @ONLY)
+  add_custom_target(doc ALL
+    ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/docs/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
+    COMMENT "Generating API documentation with Doxygen" VERBATIM)
+endif()
 
 # speex stuff
 target_compile_definitions(cubeb PRIVATE OUTSIDE_SPEEX)
