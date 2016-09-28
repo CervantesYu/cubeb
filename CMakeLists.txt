@@ -18,6 +18,10 @@ project(cubeb
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+
 add_library(cubeb
   src/cubeb.c
   src/cubeb_resampler.cpp
@@ -26,6 +30,9 @@ add_library(cubeb
 target_include_directories(cubeb PUBLIC include)
 target_include_directories(cubeb PRIVATE src)
 
+include(GenerateExportHeader)
+generate_export_header(cubeb EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/cubeb_export.h)
+target_include_directories(cubeb PUBLIC ${CMAKE_BINARY_DIR}/exports)
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
   target_sources(cubeb PRIVATE
