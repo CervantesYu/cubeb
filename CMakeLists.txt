@@ -1,19 +1,9 @@
-# https://docs.google.com/presentation/d/18fY0zDtJCMUW5WdY2ZOfKtvb7lXEbBPFe_I6MNJC0Qw/edit#slide=id.g15c79ae86d_0_55
-# https://github.com/ttroy50/cmake-examples
-# https://www.jetbrains.com/help/clion/2016.1/quick-cmake-tutorial.html?origin=old_help
-# https://cmake.org/cmake/help/v3.4/manual/cmake-buildsystem.7.html
-# http://www.slideshare.net/DanielPfeifer1/cmake-48475415
-
 # TODO
 # - backend selection by OS/cmdline (i.e. not hardcoded)
-# - split out speex build
-#   CMakeLists.txt in speex subdir, link dep in parent
-# - doxygen docs build
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(cubeb
         VERSION 0.0.0)
-#        LANGUAGES CXX) # causes .c to be built as c++, breaking externs
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
