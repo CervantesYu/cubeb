@@ -121,7 +121,7 @@ add_executable(test_devices test/test_devices.c)
 target_link_libraries(test_devices PRIVATE cubeb)
 add_test(devices test_devices)
 
-add_executable(test_resampler test/test_resampler.cpp)
+add_executable(test_resampler test/test_resampler.cpp src/speex/resample.c)
 target_compile_definitions(test_resampler PRIVATE OUTSIDE_SPEEX)
 target_compile_definitions(test_resampler PRIVATE FLOATING_POINT)
 target_compile_definitions(test_resampler PRIVATE EXPORT=)
