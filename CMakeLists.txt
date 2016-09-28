@@ -1,7 +1,7 @@
 # TODO
 # - backend selection by OS/cmdline (i.e. not hardcoded)
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 project(cubeb
         VERSION 0.0.0)
 
