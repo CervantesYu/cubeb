@@ -121,7 +121,7 @@ add_executable(test_devices test/test_devices.c)
 target_link_libraries(test_devices PRIVATE cubeb)
 add_test(devices test_devices)
 
-add_executable(test_resampler test/test_resampler.cpp $<TARGET_OBJECTS:speex>)
+add_executable(test_resampler test/test_resampler.cpp src/cubeb_resampler.cpp $<TARGET_OBJECTS:speex>)
 target_include_directories(test_resampler PRIVATE src)
 target_link_libraries(test_resampler PRIVATE cubeb)
 add_test(resampler test_resampler)

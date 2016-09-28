@@ -32,7 +32,7 @@ typedef enum {
  * @param quality Quality of the resampler.
  * @retval A non-null pointer if success.
  */
-CUBEB_EXPORT cubeb_resampler * cubeb_resampler_create(cubeb_stream * stream,
+cubeb_resampler * cubeb_resampler_create(cubeb_stream * stream,
                                          cubeb_stream_params * input_params,
                                          cubeb_stream_params * output_params,
                                          unsigned int target_rate,
@@ -52,7 +52,7 @@ CUBEB_EXPORT cubeb_resampler * cubeb_resampler_create(cubeb_stream * stream,
  * @retval Number of frames that are actually produced.
  * @retval CUBEB_ERROR on error.
  */
-CUBEB_EXPORT long cubeb_resampler_fill(cubeb_resampler * resampler,
+long cubeb_resampler_fill(cubeb_resampler * resampler,
                           void * input_buffer,
                           long * input_frame_count,
                           void * output_buffer,
@@ -62,14 +62,14 @@ CUBEB_EXPORT long cubeb_resampler_fill(cubeb_resampler * resampler,
  * Destroy a cubeb_resampler.
  * @param resampler A cubeb_resampler instance.
  */
-CUBEB_EXPORT void cubeb_resampler_destroy(cubeb_resampler * resampler);
+void cubeb_resampler_destroy(cubeb_resampler * resampler);
 
 /**
  * Returns the latency, in frames, of the resampler.
  * @param resampler A cubeb resampler instance.
  * @retval The latency, in frames, induced by the resampler.
  */
-CUBEB_EXPORT long cubeb_resampler_latency(cubeb_resampler * resampler);
+long cubeb_resampler_latency(cubeb_resampler * resampler);
 
 #if defined(__cplusplus)
 }
