@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 /* Crash the caller.  */
-void cubeb_crash() CLANG_ANALYZER_NORETURN;
+static void cubeb_crash() CLANG_ANALYZER_NORETURN;
 
 #if defined(__cplusplus)
 }
