@@ -51,7 +51,7 @@ before_install:
         sudo apt-get install -qq mingw-w64 mingw-w64-tools g++-mingw-w64 binutils-mingw-w64;
       fi
     fi
-  - if [[ "$TRAVIS_OS_NAME" = "osx" ]]; then brew uninstall libtool && brew install libtool; fi
+  - if [[ $TRAVIS_OS_NAME = "osx" ]]; then brew uninstall libtool && brew install libtool; fi
 before_script:
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       if [ ! -z "$HOST" ]; then

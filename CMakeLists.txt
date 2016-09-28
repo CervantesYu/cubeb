@@ -1,7 +1,7 @@
 # TODO
 # - backend selection by OS/cmdline (i.e. not hardcoded)
 
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(cubeb
         VERSION 0.0.0)
 
@@ -18,7 +18,7 @@ add_library(cubeb
   src/cubeb_panner.cpp
    $<TARGET_OBJECTS:speex>)
 target_include_directories(cubeb PUBLIC include)
-target_include_directories(cubeb PRIVATE src)
+target_include_directories(cubeb PRIVATE src src/speex)
 
 include(GenerateExportHeader)
 generate_export_header(cubeb EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/cubeb_export.h)
