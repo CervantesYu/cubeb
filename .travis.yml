@@ -48,9 +48,7 @@ before_install:
     fi
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       if [ ! -z "$HOST" ]; then
-        sudo apt-get install -qq mingw-w64 g++-mingw-w64 binutils-mingw-w64;
-        wget http://mirrors.kernel.org/ubuntu/pool/universe/m/mingw-w64/mingw-w64-tools_3.1.0-1_amd64.deb;
-        sudo dpkg -i mingw-w64-tools_3.1.0-1_amd64.deb;
+        sudo apt-get install -qq mingw-w64 mingw-w64-tools g++-mingw-w64 binutils-mingw-w64;
       fi
     fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew uninstall libtool && brew install libtool; fi
@@ -67,16 +65,13 @@ before_script:
         export CXX=$COMPILER_CXX;
       fi
     fi
-  - autoreconf -i
-  - $SCAN_BUILD_PATH ./configure --host=$HOST
+  - mkdir build
+  - $SCAN_BUILD_PATH cmake ..
 script:
   - echo $SCAN_BUILD_PATH
   - $SCAN_BUILD_PATH make
   - if [ -z "$HOST"  ]; then
-      if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-        make check;
-        cat test/*.log;
-      fi
+      make test;
     fi
 addons:
   apt:
