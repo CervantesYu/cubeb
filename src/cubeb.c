@@ -442,7 +442,7 @@ int cubeb_register_device_collection_changed(cubeb * context,
   return context->ops->register_device_collection_changed(context, devtype, callback, user_ptr);
 }
 
-static void
+void
 cubeb_crash()
 {
   abort();

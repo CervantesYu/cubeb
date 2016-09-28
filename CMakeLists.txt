@@ -44,7 +44,6 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
   target_link_libraries(cubeb PRIVATE dl pthread pulse asound jack)
 endif()
 
-# The platform-specific bits below are untested and probably don't work.
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
   target_sources(cubeb PRIVATE
     src/cubeb_wasapi.cpp
@@ -53,6 +52,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
   target_link_libraries(cubeb PRIVATE winmm)
 endif()
 
+# The platform-specific bits below are untested and probably don't work.
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Android")
   target_sources(cubeb PRIVATE
     src/cubeb_opensl.c
@@ -140,4 +140,3 @@ add_executable(test_utils test/test_utils.cpp)
 target_include_directories(test_utils PRIVATE src)
 target_link_libraries(test_utils PRIVATE cubeb)
 add_test(utils test_utils)
-
