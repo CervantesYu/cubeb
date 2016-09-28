@@ -32,7 +32,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     src/cubeb_audiounit.cpp
     src/cubeb_osx_run_loop.c)
   target_compile_definitions(cubeb PRIVATE USE_AUDIOUNIT)
-  target_link_libraries(cubeb INTERFACE "-framework AudioUnit" "-framework CoreAudio" "-framework CoreServices")
+  target_link_libraries(cubeb PRIVATE "-framework AudioUnit" "-framework CoreAudio" "-framework CoreServices")
 endif()
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
@@ -41,7 +41,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     src/cubeb_alsa.c
     src/cubeb_jack.cpp)
   target_compile_definitions(cubeb PRIVATE USE_PULSE USE_ALSA USE_JACK)
-  target_link_libraries(cubeb INTERFACE dl pthread pulse asound jack)
+  target_link_libraries(cubeb PRIVATE dl pthread pulse asound jack)
 endif()
 
 # The platform-specific bits below are untested and probably don't work.
@@ -50,7 +50,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     src/cubeb_wasapi.cpp
     src/cubeb_winmm.c)
   target_compile_definitions(cubeb PRIVATE USE_WASAPI USE_WINMM)
-  target_link_libraries(cubeb INTERFACE ole32 winmm)
+  target_link_libraries(cubeb PRIVATE winmm)
 endif()
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Android")
@@ -58,21 +58,21 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Android")
     src/cubeb_opensl.c
     src/cubeb_audiotrack.c)
   target_compile_definitions(cubeb PRIVATE USE_OPENSL USE_AUDIOTRACK)
-  target_link_libraries(cubeb INTERFACE OpenSLES)
+  target_link_libraries(cubeb PRIVATE OpenSLES)
 endif()
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "OpenBSD")
   target_sources(cubeb PRIVATE
     src/cubeb_sndio.c)
   target_compile_definitions(cubeb PRIVATE USE_SNDIO)
-  target_link_libraries(cubeb INTERFACE sndio)
+  target_link_libraries(cubeb PRIVATE sndio)
 endif()
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "OS2")
   target_sources(cubeb PRIVATE
     src/cubeb_kai.c)
   target_compile_definitions(cubeb PRIVATE USE_KAI)
-  target_link_libraries(cubeb INTERFACE kai)
+  target_link_libraries(cubeb PRIVATE kai)
 endif()
 
 #add_subdirectory(src/speex)
