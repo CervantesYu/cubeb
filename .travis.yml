@@ -66,6 +66,7 @@ before_script:
       fi
     fi
   - mkdir build
+  - cd build
   - $SCAN_BUILD_PATH cmake ..
 script:
   - echo $SCAN_BUILD_PATH
