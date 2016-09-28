@@ -3,9 +3,11 @@
 
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(cubeb
-        VERSION 0.0.0)
+  VERSION 0.0.0)
 
-cmake_policy(SET CMP0063 NEW)
+if(POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
+endif()
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
