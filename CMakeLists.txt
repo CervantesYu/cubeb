@@ -18,7 +18,11 @@ add_library(cubeb
   src/cubeb_panner.cpp
    $<TARGET_OBJECTS:speex>)
 target_include_directories(cubeb PUBLIC include)
-target_include_directories(cubeb PRIVATE src src/speex)
+target_include_directories(cubeb PRIVATE src)
+target_compile_definitions(cubeb PRIVATE OUTSIDE_SPEEX)
+target_compile_definitions(cubeb PRIVATE FLOATING_POINT)
+target_compile_definitions(cubeb PRIVATE EXPORT=)
+target_compile_definitions(cubeb PRIVATE RANDOM_PREFIX=speex)
 
 include(GenerateExportHeader)
 generate_export_header(cubeb EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/cubeb_export.h)
