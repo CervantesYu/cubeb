@@ -26,13 +26,21 @@ add_library(cubeb
   src/cubeb.c
   src/cubeb_resampler.cpp
   src/cubeb_panner.cpp
-  src/speex/resample.c)
+   $<TARGET_OBJECTS:speex>)
 target_include_directories(cubeb PUBLIC include)
 target_include_directories(cubeb PRIVATE src)
 
 include(GenerateExportHeader)
 generate_export_header(cubeb EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/cubeb_export.h)
 target_include_directories(cubeb PUBLIC ${CMAKE_BINARY_DIR}/exports)
+
+add_library(speex OBJECT
+  src/speex/resample.c)
+set_target_properties(speex PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+target_compile_definitions(speex PRIVATE OUTSIDE_SPEEX)
+target_compile_definitions(speex PRIVATE FLOATING_POINT)
+target_compile_definitions(speex PRIVATE EXPORT=)
+target_compile_definitions(speex PRIVATE RANDOM_PREFIX=speex)
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
   target_sources(cubeb PRIVATE
@@ -82,8 +90,6 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "OS2")
   target_link_libraries(cubeb PRIVATE kai)
 endif()
 
-#add_subdirectory(src/speex)
-
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/docs/Doxyfile @ONLY)
@@ -92,12 +98,6 @@ if(DOXYGEN_FOUND)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif()
-
-# speex stuff
-target_compile_definitions(cubeb PRIVATE OUTSIDE_SPEEX)
-target_compile_definitions(cubeb PRIVATE FLOATING_POINT)
-target_compile_definitions(cubeb PRIVATE EXPORT=)
-target_compile_definitions(cubeb PRIVATE RANDOM_PREFIX=speex)
 
 enable_testing()
 
@@ -121,11 +121,7 @@ add_executable(test_devices test/test_devices.c)
 target_link_libraries(test_devices PRIVATE cubeb)
 add_test(devices test_devices)
 
-add_executable(test_resampler test/test_resampler.cpp src/speex/resample.c)
-target_compile_definitions(test_resampler PRIVATE OUTSIDE_SPEEX)
-target_compile_definitions(test_resampler PRIVATE FLOATING_POINT)
-target_compile_definitions(test_resampler PRIVATE EXPORT=)
-target_compile_definitions(test_resampler PRIVATE RANDOM_PREFIX=speex)
+add_executable(test_resampler test/test_resampler.cpp $<TARGET_OBJECTS:speex>)
 target_include_directories(test_resampler PRIVATE src)
 target_link_libraries(test_resampler PRIVATE cubeb)
 add_test(resampler test_resampler)
