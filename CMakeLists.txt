@@ -1,5 +1,7 @@
 # TODO
+# - bump cmake ver up to 3.1 for target_sources (travis osx has 3.0.x)
 # - backend selection by OS/cmdline (i.e. not hardcoded)
+# - cross compiling (do we care? used for mingw travis, but can use appveyor for windows)
 
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(cubeb
@@ -48,13 +50,27 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
   target_link_libraries(cubeb PRIVATE "-framework AudioUnit" "-framework CoreAudio" "-framework CoreServices")
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+include(CheckIncludeFiles)
+
+check_include_files(pulse/pulseaudio.h USE_PULSE)
+if(USE_PULSE)
   target_sources(cubeb PRIVATE
-    src/cubeb_pulse.c
-    src/cubeb_alsa.c
+    src/cubeb_pulse.c)
+  target_link_libraries(cubeb PRIVATE pulse)
+endif()
+
+check_include_files(alsa/asoundlib.h USE_ALSA)
+if(USE_ALSA)
+  target_sources(cubeb PRIVATE
+    src/cubeb_alsa.c)
+  target_link_libraries(cubeb PRIVATE asound dl pthread)
+endif()
+
+check_include_files(jack/jack.h USE_JACK)
+if(USE_JACK)
+  target_sources(cubeb PRIVATE
     src/cubeb_jack.cpp)
-  target_compile_definitions(cubeb PRIVATE USE_PULSE USE_ALSA USE_JACK)
-  target_link_libraries(cubeb PRIVATE dl pthread pulse asound jack)
+  target_link_libraries(cubeb PRIVATE jack dl pthread)
 endif()
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
