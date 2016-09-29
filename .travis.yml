@@ -77,7 +77,7 @@ script:
   - echo $SCAN_BUILD_PATH
   - $SCAN_BUILD_PATH make
   - if [ -z "$HOST"  ]; then
-      make test;
+      make test ARGS=-V;
     fi
 addons:
   apt:
