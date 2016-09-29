@@ -51,8 +51,13 @@ before_install:
         sudo apt-get install -qq mingw-w64 mingw-w64-tools g++-mingw-w64 binutils-mingw-w64;
       fi
     fi
-  - if [[ $TRAVIS_OS_NAME = "osx" ]]; then brew uninstall libtool && brew install libtool; fi
+  - if [[ $TRAVIS_OS_NAME = "osx" ]]; then
+       brew update;
+       brew uninstall libtool && brew install libtool;
+       brew install cmake;
+    fi
 before_script:
+  - cmake --version
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       if [ ! -z "$HOST" ]; then
         unset CC;

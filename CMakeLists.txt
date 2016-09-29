@@ -1,7 +1,7 @@
 # TODO
 # - backend selection by OS/cmdline (i.e. not hardcoded)
 
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(cubeb
   VERSION 0.0.0)
 
@@ -121,6 +121,10 @@ add_test(devices test_devices)
 
 add_executable(test_resampler test/test_resampler.cpp src/cubeb_resampler.cpp $<TARGET_OBJECTS:speex>)
 target_include_directories(test_resampler PRIVATE src)
+target_compile_definitions(test_resampler PRIVATE OUTSIDE_SPEEX)
+target_compile_definitions(test_resampler PRIVATE FLOATING_POINT)
+target_compile_definitions(test_resampler PRIVATE EXPORT=)
+target_compile_definitions(test_resampler PRIVATE RANDOM_PREFIX=speex)
 target_link_libraries(test_resampler PRIVATE cubeb)
 add_test(resampler test_resampler)
 
