@@ -84,8 +84,8 @@ if(USE_WASAPI)
   target_compile_definitions(cubeb PRIVATE USE_WASAPI)
 endif()
 
-check_include_files(mmsystem.h USE_WINMM)
-if(USE_WASAPI)
+check_include_files("windows.h;mmsystem.h" USE_WINMM)
+if(USE_WINMM)
   target_sources(cubeb PRIVATE
     src/cubeb_winmm.c)
   target_compile_definitions(cubeb PRIVATE USE_WINMM)
