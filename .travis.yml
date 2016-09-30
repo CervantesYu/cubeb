@@ -84,8 +84,10 @@ before_script:
 script:
   - echo $SCAN_BUILD_PATH
   - $SCAN_BUILD_PATH make
-  - if [ -z "$HOST"  ]; then
-      make test ARGS=-V;
+  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
+      if [ -z "$HOST"  ]; then
+        make test ARGS=-V;
+      fi
     fi
 addons:
   apt:
