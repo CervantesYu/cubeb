@@ -72,7 +72,15 @@ before_script:
     fi
   - mkdir build
   - cd build
-  - $SCAN_BUILD_PATH cmake ..
+  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
+      if [ ! -z "$HOST" ]; then
+        $SCAN_BUILD_PATH cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-cross-mingw.cmake ..;
+      else
+        $SCAN_BUILD_PATH cmake ..
+      fi
+    else
+        $SCAN_BUILD_PATH cmake ..
+    fi
 script:
   - echo $SCAN_BUILD_PATH
   - $SCAN_BUILD_PATH make
