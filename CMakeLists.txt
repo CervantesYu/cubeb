@@ -42,15 +42,16 @@ target_compile_definitions(speex PRIVATE FLOATING_POINT)
 target_compile_definitions(speex PRIVATE EXPORT=)
 target_compile_definitions(speex PRIVATE RANDOM_PREFIX=speex)
 
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+include(CheckIncludeFiles)
+
+check_include_files(AudioUnit/AudioUnit.h USE_AUDIOUNIT)
+if(USE_AUDIOUNIT)
   target_sources(cubeb PRIVATE
     src/cubeb_audiounit.cpp
     src/cubeb_osx_run_loop.c)
   target_compile_definitions(cubeb PRIVATE USE_AUDIOUNIT)
   target_link_libraries(cubeb PRIVATE "-framework AudioUnit" "-framework CoreAudio" "-framework CoreServices")
 endif()
-
-include(CheckIncludeFiles)
 
 check_include_files(pulse/pulseaudio.h USE_PULSE)
 if(USE_PULSE)
@@ -76,31 +77,46 @@ if(USE_JACK)
   target_link_libraries(cubeb PRIVATE jack dl pthread)
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+check_include_files(audioclient.h USE_WASAPI)
+if(USE_WASAPI)
   target_sources(cubeb PRIVATE
-    src/cubeb_wasapi.cpp
+    src/cubeb_wasapi.cpp)
+  target_compile_definitions(cubeb PRIVATE USE_WASAPI)
+endif()
+
+check_include_files(mmsystem.h USE_WINMM)
+if(USE_WASAPI)
+  target_sources(cubeb PRIVATE
     src/cubeb_winmm.c)
-  target_compile_definitions(cubeb PRIVATE USE_WASAPI USE_WINMM)
+  target_compile_definitions(cubeb PRIVATE USE_WINMM)
   target_link_libraries(cubeb PRIVATE winmm)
 endif()
 
-# The platform-specific bits below are untested and probably don't work.
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Android")
+check_include_files(SLES/OpenSLES.h USE_OPENSL)
+if(USE_OPENSL)
   target_sources(cubeb PRIVATE
-    src/cubeb_opensl.c
-    src/cubeb_audiotrack.c)
-  target_compile_definitions(cubeb PRIVATE USE_OPENSL USE_AUDIOTRACK)
+    src/cubeb_opensl.c)
+  target_compile_definitions(cubeb PRIVATE USE_OPENSL)
   target_link_libraries(cubeb PRIVATE OpenSLES)
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" MATCHES "OpenBSD")
+check_include_files(android/log.h USE_AUDIOTRACK)
+if(USE_AUDIOTRACK)
+  target_sources(cubeb PRIVATE
+    src/cubeb_audiotrack.c)
+  target_compile_definitions(cubeb PRIVATE USE_AUDIOTRACK)
+endif()
+
+check_include_files(sndio.h USE_SNDIO)
+if(USE_SNDIO)
   target_sources(cubeb PRIVATE
     src/cubeb_sndio.c)
   target_compile_definitions(cubeb PRIVATE USE_SNDIO)
   target_link_libraries(cubeb PRIVATE sndio)
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" MATCHES "OS2")
+check_include_files(kai.h USE_KAI)
+if(USE_KAI)
   target_sources(cubeb PRIVATE
     src/cubeb_kai.c)
   target_compile_definitions(cubeb PRIVATE USE_KAI)
